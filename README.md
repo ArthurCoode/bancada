@@ -36,7 +36,7 @@ status, filas e boas práticas de testes.
 ## Fases
 
 - [x] Fase 0: Fundação
-- [ ] Fase 1: Autenticação e multi-tenancy
+- [x] Fase 1: Autenticação e multi-tenancy
 - [ ] Fase 2: Clientes e aparelhos
 - [ ] Fase 3: Ordem de serviço
 - [ ] Fase 4: Orçamento e aprovação

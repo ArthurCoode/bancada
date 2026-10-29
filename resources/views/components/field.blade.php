@@ -1,10 +1,10 @@
-@props(['name', 'label', 'type' => 'text'])
+@props(['name', 'label', 'type' => 'text', 'value' => null])
 
 <div>
     <label for="{{ $name }}" class="mb-1 block text-sm font-medium text-slate-700">{{ $label }}</label>
 
     <input id="{{ $name }}" name="{{ $name }}" type="{{ $type }}"
-           @if ($type !== 'password') value="{{ old($name) }}" @endif
+           @if ($type !== 'password') value="{{ old($name, $value) }}" @endif
            {{ $attributes->merge(['class' => 'w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none']) }}>
 
     @error($name)

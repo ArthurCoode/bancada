@@ -57,6 +57,12 @@
 
             {{-- Conteúdo --}}
             <main class="flex-1 px-4 py-6 md:px-8">
+                @if (session('status'))
+                    <div class="mb-4 rounded-md border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
+                        {{ session('status') }}
+                    </div>
+                @endif
+
                 @yield('content')
             </main>
         </div>
