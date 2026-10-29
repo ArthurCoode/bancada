@@ -5,11 +5,11 @@
         : 'flex items-center rounded-md px-3 py-2';
 
     $items = [
-        ['label' => 'Início',            'route' => 'home',       'active' => 'home',   'enabled' => true],
-        ['label' => 'Clientes',          'route' => null,         'enabled' => false],
-        ['label' => 'Aparelhos',         'route' => null,         'enabled' => false],
-        ['label' => 'Ordens de serviço', 'route' => null,         'enabled' => false],
-        ['label' => 'Equipe',            'route' => 'team.index', 'active' => 'team.*', 'enabled' => true, 'owner_only' => true],
+        ['label' => 'Início',            'route' => 'home',            'active' => 'home',        'enabled' => true],
+        ['label' => 'Clientes',          'route' => 'customers.index', 'active' => 'customers.*', 'enabled' => true],
+        ['label' => 'Aparelhos',         'route' => null,              'enabled' => false],
+        ['label' => 'Ordens de serviço', 'route' => null,              'enabled' => false],
+        ['label' => 'Equipe',            'route' => 'team.index',      'active' => 'team.*',      'enabled' => true, 'owner_only' => true],
     ];
 
     // Esconde os itens exclusivos do dono para os demais papéis.

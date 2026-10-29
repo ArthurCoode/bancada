@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\TeamController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,17 @@ Route::middleware('guest')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/', fn () => view('home'))->name('home');
     Route::post('/sair', [LoginController::class, 'destroy'])->name('logout');
+
+    // Clientes: qualquer membro da loja (o delete é restrito pela policy).
+    Route::prefix('clientes')->name('customers.')->group(function () {
+        Route::get('/', [CustomerController::class, 'index'])->name('index');
+        Route::get('/novo', [CustomerController::class, 'create'])->name('create');
+        Route::post('/', [CustomerController::class, 'store'])->name('store');
+        Route::get('/{customer}', [CustomerController::class, 'show'])->name('show')->whereNumber('customer');
+        Route::get('/{customer}/editar', [CustomerController::class, 'edit'])->name('edit')->whereNumber('customer');
+        Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')->whereNumber('customer');
+        Route::delete('/{customer}', [CustomerController::class, 'destroy'])->name('destroy')->whereNumber('customer');
+    });
 
     // Área do dono: o middleware `can:` executa UserPolicy::viewAny antes do controller.
     Route::middleware('can:viewAny,'.User::class)
