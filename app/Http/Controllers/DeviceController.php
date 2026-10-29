@@ -76,6 +76,11 @@ class DeviceController extends Controller
     {
         Gate::authorize('delete', $device);
 
+        if ($device->serviceOrders()->exists()) {
+            return redirect()->route('devices.edit', $device)
+                ->with('error', 'Não é possível remover: este aparelho possui ordens de serviço.');
+        }
+
         $customerId = $device->customer_id;
         $device->delete();
 

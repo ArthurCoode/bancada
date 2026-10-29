@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\ServiceOrderController;
 use App\Http\Controllers\TeamController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -41,6 +42,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/{device}/editar', [DeviceController::class, 'edit'])->name('edit')->whereNumber('device');
         Route::put('/{device}', [DeviceController::class, 'update'])->name('update')->whereNumber('device');
         Route::delete('/{device}', [DeviceController::class, 'destroy'])->name('destroy')->whereNumber('device');
+    });
+
+    // Ordens de serviço: qualquer membro da loja pode abrir e consultar.
+    Route::prefix('ordens')->name('orders.')->group(function () {
+        Route::get('/', [ServiceOrderController::class, 'index'])->name('index');
+        Route::get('/nova', [ServiceOrderController::class, 'create'])->name('create');
+        Route::post('/', [ServiceOrderController::class, 'store'])->name('store');
+        Route::get('/{order}', [ServiceOrderController::class, 'show'])->name('show')->whereNumber('order');
     });
 
     // Área do dono: o middleware `can:` executa UserPolicy::viewAny antes do controller.

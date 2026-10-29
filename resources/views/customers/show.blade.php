@@ -61,9 +61,11 @@
                             <td class="px-4 py-3 font-medium">{{ $device->label() }}</td>
                             <td class="px-4 py-3 text-slate-600">{{ $device->serial_number ?? '—' }}</td>
                             <td class="px-4 py-3 text-slate-600">{{ $device->color ?? '—' }}</td>
-                            <td class="px-4 py-3 text-right">
+                            <td class="whitespace-nowrap px-4 py-3 text-right">
+                                <a href="{{ route('orders.create', ['customer' => $customer->id, 'device' => $device->id]) }}"
+                                   class="font-medium text-green-700 underline">Abrir OS</a>
                                 <a href="{{ route('devices.edit', $device) }}"
-                                   class="font-medium text-slate-700 underline">Editar</a>
+                                   class="ml-3 font-medium text-slate-700 underline">Editar</a>
                             </td>
                         </tr>
                     @empty
@@ -76,7 +78,7 @@
         </div>
 
         <p class="mt-4 text-sm text-slate-500">
-            As ordens de serviço deste cliente aparecerão aqui na próxima fase.
+            O histórico de ordens de serviço deste cliente aparece aqui na próxima etapa.
         </p>
     </div>
 @endsection
