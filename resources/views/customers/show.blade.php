@@ -42,7 +42,41 @@
         </div>
     </div>
 
-    <p class="mt-4 text-sm text-slate-500">
-        Aparelhos e ordens de serviço deste cliente aparecerão aqui nas próximas fases.
-    </p>
+    {{-- Aparelhos do cliente --}}
+    <div class="mt-6 max-w-2xl">
+        <div class="mb-3 flex items-center justify-between">
+            <h2 class="text-base font-semibold">Aparelhos</h2>
+
+            <a href="{{ route('devices.create', ['customer' => $customer->id]) }}"
+               class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                Adicionar aparelho
+            </a>
+        </div>
+
+        <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+            <table class="min-w-full text-left text-sm">
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($devices as $device)
+                        <tr>
+                            <td class="px-4 py-3 font-medium">{{ $device->label() }}</td>
+                            <td class="px-4 py-3 text-slate-600">{{ $device->serial_number ?? '—' }}</td>
+                            <td class="px-4 py-3 text-slate-600">{{ $device->color ?? '—' }}</td>
+                            <td class="px-4 py-3 text-right">
+                                <a href="{{ route('devices.edit', $device) }}"
+                                   class="font-medium text-slate-700 underline">Editar</a>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td class="px-4 py-6 text-center text-slate-500">Nenhum aparelho cadastrado.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        <p class="mt-4 text-sm text-slate-500">
+            As ordens de serviço deste cliente aparecerão aqui na próxima fase.
+        </p>
+    </div>
 @endsection

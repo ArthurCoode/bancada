@@ -49,7 +49,10 @@ class CustomerController extends Controller
 
     public function show(Customer $customer): View
     {
-        return view('customers.show', ['customer' => $customer]);
+        return view('customers.show', [
+            'customer' => $customer,
+            'devices' => $customer->devices()->orderBy('brand')->orderBy('model')->get(),
+        ]);
     }
 
     public function edit(Customer $customer): View
@@ -67,6 +70,11 @@ class CustomerController extends Controller
     public function destroy(Customer $customer): RedirectResponse
     {
         Gate::authorize('delete', $customer);
+
+        if ($customer->devices()->exists()) {
+            return redirect()->route('customers.show', $customer)
+                ->with('error', 'Não é possível remover: este cliente possui aparelhos cadastrados. Remova os aparelhos primeiro.');
+        }
 
         $customer->delete();
 

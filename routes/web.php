@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\TeamController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -30,6 +31,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/{customer}/editar', [CustomerController::class, 'edit'])->name('edit')->whereNumber('customer');
         Route::put('/{customer}', [CustomerController::class, 'update'])->name('update')->whereNumber('customer');
         Route::delete('/{customer}', [CustomerController::class, 'destroy'])->name('destroy')->whereNumber('customer');
+    });
+
+    // Aparelhos: qualquer membro da loja (o delete é restrito pela policy).
+    Route::prefix('aparelhos')->name('devices.')->group(function () {
+        Route::get('/', [DeviceController::class, 'index'])->name('index');
+        Route::get('/novo', [DeviceController::class, 'create'])->name('create');
+        Route::post('/', [DeviceController::class, 'store'])->name('store');
+        Route::get('/{device}/editar', [DeviceController::class, 'edit'])->name('edit')->whereNumber('device');
+        Route::put('/{device}', [DeviceController::class, 'update'])->name('update')->whereNumber('device');
+        Route::delete('/{device}', [DeviceController::class, 'destroy'])->name('destroy')->whereNumber('device');
     });
 
     // Área do dono: o middleware `can:` executa UserPolicy::viewAny antes do controller.

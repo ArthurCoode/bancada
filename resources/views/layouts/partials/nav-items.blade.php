@@ -7,7 +7,7 @@
     $items = [
         ['label' => 'Início',            'route' => 'home',            'active' => 'home',        'enabled' => true],
         ['label' => 'Clientes',          'route' => 'customers.index', 'active' => 'customers.*', 'enabled' => true],
-        ['label' => 'Aparelhos',         'route' => null,              'enabled' => false],
+        ['label' => 'Aparelhos',         'route' => 'devices.index',   'active' => 'devices.*',   'enabled' => true],
         ['label' => 'Ordens de serviço', 'route' => null,              'enabled' => false],
         ['label' => 'Equipe',            'route' => 'team.index',      'active' => 'team.*',      'enabled' => true, 'owner_only' => true],
     ];
