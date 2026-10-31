@@ -97,24 +97,66 @@
             </div>
         </div>
 
-        {{-- Histórico --}}
-        <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm lg:self-start">
-            <h3 class="mb-3 text-base font-semibold">Histórico</h3>
+        <div class="space-y-6 lg:self-start">
 
-            <ol class="space-y-4 text-sm">
-                @foreach ($order->statusHistory as $entry)
-                    <li>
-                        <x-status-badge :status="$entry->to_status" />
-                        <p class="mt-1 text-slate-600">
-                            {{ $entry->created_at->format('d/m/Y H:i') }}
-                            @if ($entry->user) · {{ $entry->user->name }} @endif
-                        </p>
-                        @if ($entry->note)
-                            <p class="text-slate-500">{{ $entry->note }}</p>
+            {{-- Alterar status --}}
+            <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 class="mb-3 text-base font-semibold">Alterar status</h3>
+
+                @if (count($statusOptions) === 0)
+                    <p class="text-sm text-slate-500">
+                        @if ($order->status->isFinal())
+                            Esta OS está encerrada.
+                        @else
+                            Nenhuma ação disponível para o seu papel neste momento.
                         @endif
-                    </li>
-                @endforeach
-            </ol>
+                    </p>
+                @else
+                    <form method="POST" action="{{ route('orders.status', $order) }}" class="space-y-3">
+                        @csrf
+                        @method('PATCH')
+
+                        <x-select name="status" label="Novo status" :options="$statusOptions"
+                                  placeholder="Selecione" required />
+
+                        <div>
+                            <label for="note" class="mb-1 block text-sm font-medium text-slate-700">
+                                Observação (obrigatória ao reprovar ou cancelar)
+                            </label>
+                            <textarea id="note" name="note" rows="2"
+                                      class="w-full rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-slate-500 focus:outline-none">{{ old('note') }}</textarea>
+                            @error('note')
+                                <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <button type="submit"
+                                class="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
+                            Atualizar status
+                        </button>
+                    </form>
+                @endif
+            </div>
+
+            {{-- Histórico --}}
+            <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-sm">
+                <h3 class="mb-3 text-base font-semibold">Histórico</h3>
+
+                <ol class="space-y-4 text-sm">
+                    @foreach ($order->statusHistory as $entry)
+                        <li>
+                            <x-status-badge :status="$entry->to_status" />
+                            <p class="mt-1 text-slate-600">
+                                {{ $entry->created_at->format('d/m/Y H:i') }}
+                                @if ($entry->user) · {{ $entry->user->name }} @endif
+                            </p>
+                            @if ($entry->note)
+                                <p class="text-slate-500">{{ $entry->note }}</p>
+                            @endif
+                        </li>
+                    @endforeach
+                </ol>
+            </div>
         </div>
     </div>
 

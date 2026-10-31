@@ -44,12 +44,13 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{device}', [DeviceController::class, 'destroy'])->name('destroy')->whereNumber('device');
     });
 
-    // Ordens de serviço: qualquer membro da loja pode abrir e consultar.
+    // Ordens de serviço: qualquer membro abre e consulta; mudar status depende do papel (policy).
     Route::prefix('ordens')->name('orders.')->group(function () {
         Route::get('/', [ServiceOrderController::class, 'index'])->name('index');
         Route::get('/nova', [ServiceOrderController::class, 'create'])->name('create');
         Route::post('/', [ServiceOrderController::class, 'store'])->name('store');
         Route::get('/{order}', [ServiceOrderController::class, 'show'])->name('show')->whereNumber('order');
+        Route::patch('/{order}/status', [ServiceOrderController::class, 'changeStatus'])->name('status')->whereNumber('order');
     });
 
     // Área do dono: o middleware `can:` executa UserPolicy::viewAny antes do controller.

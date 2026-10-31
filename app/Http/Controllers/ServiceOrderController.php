@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Enums\Role;
 use App\Enums\ServiceOrderStatus;
+use App\Http\Requests\ChangeServiceOrderStatusRequest;
 use App\Http\Requests\OpenServiceOrderRequest;
 use App\Models\Customer;
 use App\Models\ServiceOrder;
@@ -93,14 +94,34 @@ class ServiceOrderController extends Controller
             ->with('status', "OS {$order->displayNumber()} aberta.");
     }
 
-    public function show(ServiceOrder $order): View
+    public function show(Request $request, ServiceOrder $order): View
     {
         $order->load(['customer', 'device', 'technician', 'creator', 'statusHistory.user']);
 
+        // Só os destinos que o fluxo permite E que o papel do usuário pode aplicar.
+        $statusOptions = collect($order->status->allowedTransitions())
+            ->filter(fn (ServiceOrderStatus $to) => $request->user()->can('changeStatus', [$order, $to]))
+            ->mapWithKeys(fn (ServiceOrderStatus $to) => [$to->value => $to->label()])
+            ->all();
+
         return view('orders.show', [
             'order' => $order,
+            'statusOptions' => $statusOptions,
             'checklistItems' => ServiceOrder::CHECKLIST_ITEMS,
             'checklistStates' => ServiceOrder::CHECKLIST_STATES,
         ]);
+    }
+
+    public function changeStatus(
+        ChangeServiceOrderStatusRequest $request,
+        ServiceOrder $order,
+        ServiceOrderService $service,
+    ): RedirectResponse {
+        $to = $request->enum('status', ServiceOrderStatus::class);
+
+        $service->changeStatus($request->user(), $order, $to, $request->validated('note'));
+
+        return redirect()->route('orders.show', $order)
+            ->with('status', "Status alterado para {$to->label()}.");
     }
 }

@@ -44,4 +44,41 @@ enum ServiceOrderStatus: string
             self::Cancelled => 'bg-red-100 text-red-800',
         };
     }
+
+    /**
+     * Regras do fluxo: para onde uma OS pode ir a partir deste status.
+     * Para ajustar o fluxo da loja, mexa só aqui.
+     *
+     * @return array<int, self>
+     */
+    public function allowedTransitions(): array
+    {
+        return match ($this) {
+            self::Received => [self::InAnalysis, self::Cancelled],
+            self::InAnalysis => [self::AwaitingApproval, self::InRepair, self::Cancelled],
+            self::AwaitingApproval => [self::Approved, self::Rejected, self::Cancelled],
+            self::Approved => [self::InRepair, self::Cancelled],
+            self::InRepair => [self::Ready, self::AwaitingApproval, self::Cancelled],
+            self::Ready => [self::Delivered, self::InRepair],
+            self::Rejected => [self::Delivered, self::AwaitingApproval],
+            self::Delivered, self::Cancelled => [],
+        };
+    }
+
+    public function canTransitionTo(self $to): bool
+    {
+        return in_array($to, $this->allowedTransitions(), true);
+    }
+
+    /** Status finais: a OS está encerrada e não muda mais. */
+    public function isFinal(): bool
+    {
+        return $this->allowedTransitions() === [];
+    }
+
+    /** Reprovar e cancelar exigem um motivo registrado no histórico. */
+    public function requiresNote(): bool
+    {
+        return in_array($this, [self::Rejected, self::Cancelled], true);
+    }
 }

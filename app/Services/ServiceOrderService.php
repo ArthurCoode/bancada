@@ -8,6 +8,7 @@ use App\Models\Tenant;
 use App\Models\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class ServiceOrderService
 {
@@ -46,6 +47,38 @@ class ServiceOrderService
             ]);
 
             return $order;
+        });
+    }
+
+    /**
+     * Muda o status da OS respeitando o fluxo e registra quem, quando e por quê.
+     */
+    public function changeStatus(User $user, ServiceOrder $order, ServiceOrderStatus $to, ?string $note = null): ServiceOrder
+    {
+        return DB::transaction(function () use ($user, $order, $to, $note) {
+            // Relê a OS travando a linha: duas pessoas mudando ao mesmo tempo esperam a vez
+            // e a segunda enxerga o status já atualizado pela primeira.
+            $current = ServiceOrder::query()->whereKey($order->id)->lockForUpdate()->firstOrFail();
+            $from = $current->status;
+
+            if (! $from->canTransitionTo($to)) {
+                throw ValidationException::withMessages([
+                    'status' => "Não é possível mudar de “{$from->label()}” para “{$to->label()}”.",
+                ]);
+            }
+
+            $current->status = $to;
+            $current->save();
+
+            $current->statusHistory()->create([
+                'tenant_id' => $current->tenant_id,
+                'from_status' => $from,
+                'to_status' => $to,
+                'user_id' => $user->id,
+                'note' => $note,
+            ]);
+
+            return $current;
         });
     }
 

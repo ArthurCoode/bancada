@@ -2,6 +2,7 @@
 
 return [
     'accepted' => 'O campo :attribute deve ser aceito.',
+    'after_or_equal' => 'O campo :attribute deve ser uma data igual ou posterior a :date.',
     'array' => 'O campo :attribute deve ser uma lista.',
     'between' => [
         'numeric' => 'O campo :attribute deve estar entre :min e :max.',
@@ -15,6 +16,7 @@ return [
     'date_format' => 'O campo :attribute deve estar no formato :format.',
     'digits' => 'O campo :attribute deve ter :digits dígitos.',
     'email' => 'O campo :attribute deve ser um e-mail válido.',
+    'enum' => 'O valor selecionado para :attribute é inválido.',
     'exists' => 'O valor selecionado para :attribute é inválido.',
     'file' => 'O campo :attribute deve ser um arquivo.',
     'image' => 'O arquivo :attribute deve ser uma imagem.',

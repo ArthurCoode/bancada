@@ -76,9 +76,32 @@
                 </tbody>
             </table>
         </div>
+    </div>
 
-        <p class="mt-4 text-sm text-slate-500">
-            O histórico de ordens de serviço deste cliente aparece aqui na próxima etapa.
-        </p>
+    {{-- Ordens de serviço do cliente --}}
+    <div class="mt-6 max-w-2xl">
+        <h2 class="mb-3 text-base font-semibold">Ordens de serviço</h2>
+
+        <div class="overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm">
+            <table class="min-w-full text-left text-sm">
+                <tbody class="divide-y divide-slate-100">
+                    @forelse ($orders as $order)
+                        <tr>
+                            <td class="whitespace-nowrap px-4 py-3">
+                                <a href="{{ route('orders.show', $order) }}"
+                                   class="font-semibold text-slate-900 hover:underline">OS {{ $order->displayNumber() }}</a>
+                            </td>
+                            <td class="px-4 py-3"><x-status-badge :status="$order->status" /></td>
+                            <td class="px-4 py-3 text-slate-600">{{ $order->device->label() }}</td>
+                            <td class="whitespace-nowrap px-4 py-3 text-slate-600">{{ $order->created_at->format('d/m/Y') }}</td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td class="px-4 py-6 text-center text-slate-500">Nenhuma ordem de serviço ainda.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
 @endsection

@@ -19,6 +19,11 @@ class Customer extends Model
         return $this->hasMany(Device::class);
     }
 
+    public function serviceOrders(): HasMany
+    {
+        return $this->hasMany(ServiceOrder::class);
+    }
+
     /** (11) 98765-4321 ou (11) 3456-7890, a partir dos dígitos guardados. */
     public function formattedPhone(): string
     {

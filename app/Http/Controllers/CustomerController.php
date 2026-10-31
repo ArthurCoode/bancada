@@ -52,6 +52,7 @@ class CustomerController extends Controller
         return view('customers.show', [
             'customer' => $customer,
             'devices' => $customer->devices()->orderBy('brand')->orderBy('model')->get(),
+            'orders' => $customer->serviceOrders()->with('device')->orderByDesc('number')->get(),
         ]);
     }
 
